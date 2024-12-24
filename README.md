@@ -10,9 +10,23 @@ conf t
 
 int range f0/1-24
 switchport mode access
-switchport access vlan 100
+switchport access vlan 10
 
 do wr
 ````
+
+I configured the L3 switches ports so that the interfaces on the L3 swith are on the same vlans as the L2 switches.
+
+````
+en
+conf t
+
+int f0/5
+switchport mode access
+switchport access vlan 40
+
+exit
+``````
+
 
 
