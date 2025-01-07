@@ -1,4 +1,37 @@
-# Networking-Project
+# Cisco Packet Tracer University Network Project
+This projectn involves creating a network for a university that has 2 campuses(one main and one small) that are 20 miles apart.
+
+# Main campus has 3 buildings:
+Building A: Admin staff , HR, Finance, Business
+Building B: Engineering, Art 
+Building C: Student labs, IT department
+
+# Smaller Campus:
+Health and Science Building which contains the Staff and Studnet Labs on seperate floors
+
+# On the cloud:
+Email Server
+
+# Goals of the project: 
+Each department is expected to be on its own seperate IP network
+The switches should be configured with appropriate VLANs and securitys settings
+RIPv2 will be used to provide routing for the routers in the internal network and static routing for the external server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Need to update up here casue I forgot to save my progress 
 I set the clock rate for the DCE connections to the Main campus router to 64000.
