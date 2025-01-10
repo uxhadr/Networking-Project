@@ -142,3 +142,60 @@ dns-server 192.168.9.1
 I clicked on one of the PCs in the Vlan to see if it got an automatic ip address to see if the dhcp configuration worked:
 ![image](https://github.com/user-attachments/assets/7984d65f-3461-4612-8cc5-a2134d894335)
 
+
+
+
+
+Configuring subinterfaces on the router for each vlan
+```
+int g0/0.10
+encapsulation dot1Q 10
+ip address 192.168.1.1 255.255.255.0
+ex
+```
+
+Configuring the dhcp server
+```
+service dhcp
+ip dhcp pool admin-pool
+network 192.168.1.0 255.255.255.0
+default-router 192.168.1.1
+dns-server 192.168.1.1
+exit 
+```
+
+When I was done the dhcp configuration worked since each device was receiving a dhcp address but the intervan routing was having problems since I wasnt able to ping devices form different vlans.
+So I started troubleshooting and checking my configurations, the vlans and sub interfaces were properly configured.
+I configured the port that connects the L3 switch to the Main campus router as a Trunk port but I was still having trouble 
+
+
+On a PC on the main campus,I tried to ping devices in the smaller campus network but I got an error saying destination host unreachable.
+![image](https://github.com/user-attachments/assets/261c86ae-a3ed-4318-8ea4-c28acdf998b2)
+
+
+To fix this I implemented a routing protocol: RIPv2.
+
+To configure it I used the commands: 
+On the smaller campus router:
+```
+en
+conf t
+router rip 
+version 2
+network 192.168.9.0
+network 192.168.10.0
+network 10.10.10.0
+do wr
+```
+
+
+I used the same commands on the main campus router but just used the 10 networks connected to the router for that command an dnow I was able to ping PCs in the samller campus network from any PCs in the main campu network.
+
+I also tested connectivity to see if the email server in the cloud was able to ping devices from the all the campuses and it was successful.
+![Physical](https://github.com/user-attachments/assets/e3544800-5581-4131-abc3-e438c70123f3)
+
+
+
+
+
+
