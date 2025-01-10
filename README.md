@@ -1,186 +1,130 @@
 # Cisco Packet Tracer University Network Project
-This projectn involves creating a network for a university that has 2 campuses(one main and one small) that are 20 miles apart.
 
-# Main campus has 3 buildings:
-Building A: Admin staff , HR, Finance, Business
-Building B: Engineering, Art 
-Building C: Student labs, IT department
+This project involves creating a network for a university with two campuses (one main and one smaller) located 20 miles apart.
 
-# Smaller Campus:
-Health and Science Building which contains the Staff and Studnet Labs on seperate floors
+## Main Campus (3 Buildings):
+- **Building A:** Admin Staff, HR, Finance, Business
+- **Building B:** Engineering, Art
+- **Building C:** Student Labs, IT Department
 
-# On the cloud:
-Email Server
+## Smaller Campus:
+- **Health and Science Building:** Staff offices and Student Labs on separate floors
 
-# Goals of the project: 
-Each department is expected to be on its own seperate IP network
-The switches should be configured with appropriate VLANs and securitys settings
-RIPv2 will be used to provide routing for the routers in the internal network and static routing for the external server
+## Cloud:
+- **Email Server**
 
-I started by selecting a router which will be the core of the network. Next I added a L3 switch(3650-24PS) which will manage the devices in the main campus. Next I added a switch in each department and named them based on the department, I also added a PC in each department.
+## Project Goals:
+- Each department should be on its own separate IP network.
+- Switches must be configured with appropriate VLANs and security settings.
+- **RIPv2** will be used for internal network routing and static routing for the external email server.
 
-I added a serial interface on all the routers, I then connected the cloud and the smaller campus routers using serial DCE connections to the main campus router.I then connected the the the L3 switch to the main campus router and then connected the L3 switch to all the L2 switches in each department.
-Next I seperated each building and the cloud using the rectangular borders, and named each building and department.
+---
 
-Next, I worked on the smaller campus, I connected its L3 switch to the smaller campus's router and then connected the L3 switch to each departments L2 switch.
-I created vlans for each department, starting from VLAN 10 (192.168.1.0/24) through VLAN 100 (192.168.10.0/24)  
+## Network Design and Configuration
+
+### Step 1: Core Network Setup
+- Selected a router as the core of the network.
+- Added a **Layer 3 Switch (3650-24PS)** to manage the main campus devices.
+- Added a switch in each department and connected a PC to each.
+- Installed serial interfaces on all routers.
+- Connected the cloud and the smaller campus routers to the main campus router using **Serial DCE** connections.
+- Connected the **L3 switch** to the main campus router and then to all departmental **L2 switches**.
+- Used rectangular borders to visually separate each building and the cloud in Packet Tracer.
+
+### Step 2: Smaller Campus Setup
+- Connected the smaller campus **L3 switch** to its router.
+- Connected the L3 switch to each department's **L2 switch**.
+- Created VLANs for each department, starting from **VLAN 10 (192.168.1.0/24)** up to **VLAN 100 (192.168.10.0/24)**.
+
+### Step 3: Interface Activation
+- Enabled interfaces on the main campus router:
+  ```
+  en
+  conf t
+  int g0/0
+  no shut
+  ```
+- Enabled interfaces connected to the smaller campus router (**int s0/1/1**) and the cloud router (**int s0/1/0**).
+- Set clock rates on **DCE** interfaces:
+  ```
+  int s0/1/1
+  clock rate 64000
+  int s0/0/0
+  clock rate 64000
+  do wr
+  ```
+
+### Step 4: VLAN Configuration on L2 Switches
+- Configured VLANs on all **L2 switches**:
+  ```
+  en
+  conf t
+  int range f0/1-24
+  switchport mode access
+  switchport access vlan 10
+  do wr
+  ```
+- Repeated for all VLANs up to VLAN 100.
 ![image](https://github.com/user-attachments/assets/7996911e-4e4c-42b3-9a11-649d63cd473b)
 
-I turned on interface on the main campus router that was connected to the L3 switch using the command:
-```
-en
-conf t
-int g0/0
-no shut
-```
-I also turned on the interfaces connected to the smaller campus router(int s0/1/1) and the cloud router(int s0/1/0). 
+### Step 5: L3 Switch Configuration
+- Configured access ports on the **L3 switch**:
+  ```
+  int g1/0/10
+  switchport mode access
+  switchport access vlan 40
+  exit
+  ```
+- Enabled trunking on the **L3 switch**:
+  ```
+  int g1/0/10
+  switchport trunk encapsulation dot1q
+  switchport mode trunk
+  ```
 
-I set a clock rate on the main campus router interfaces.
-```
-int s/0/1/1
-clock rate 64000
-int s0/0/0
-clock rate 64000
-do wr
-```
+### Step 6: Subinterface Configuration for VLANs
+- Configured subinterfaces on the router to match VLANs:
+  ```
+  int g0/0.10
+  encapsulation dot1Q 10
+  ip address 192.168.1.1 255.255.255.0
+  exit
+  ```
+This configuration was systematically repeated for all VLANS upto VLAN 100 (`int g0/0.100` | IP address 192.168.10.1/24)
 
-I configured all the L2 switches with vlans:
-```
-en
-conf t
-int range f0/1-24
-switchport mode ac
-switchport ac vlan 10
-do wr
-```
-I repeated the commands above for all the switches through vlan 100
+### Step 7: DHCP Configuration
+- Enabled DHCP:
+  ```
+  service dhcp
+  ```
+- Created DHCP pools for each department to allocate IP addresses dynamically:
+  ```
+  ip dhcp pool admin-pool
+  network 192.168.1.0 255.255.255.0
+  default-router 192.168.1.1
+  dns-server 192.168.1.1
+  exit
+  ```
+- Verified DHCP functionality by confirming that devices automatically received IP addresses from their designated VLAN pools.
+  ![image](https://github.com/user-attachments/assets/2318ba3c-36ca-4fae-b5e7-2f2720c06983)
 
+**Assigned a static IP address** to the email server to ensure consistent accessibility and reliable communication across the network.
 
+**Purpose:** Dynamic addressing simplifies device management, while the static IP for the email server ensures uninterrupted service availability.
 
+I assigned the email server a static IP address:
+![image](https://github.com/user-attachments/assets/e797ab24-dcd9-491d-befc-2b05ab5c579e)
 
-
-
-
-
-
-
-
-
-
-
-Need to update up here casue I forgot to save my progress 
-I set the clock rate for the DCE connections to the Main campus router to 64000.
-I configured the vlans on all the L2 switches for each department using the following commands:
-
-````
-en
-conf t
-
-int range f0/1-24
-switchport mode access
-switchport access vlan 10
-
-do wr
-````
-
-I configured the L3 switches ports so that the interfaces on the L3 swith are on the same vlans as the L2 switches.
-
-````
-en
-conf t
-
-int f0/5
-switchport mode access
-switchport access vlan 40
-
-exit
-``````
-
-Next I configured trunking on the L3 switches so that traffic from all the vlans is able to pass through.
-I entered the following commands in configuration mode:
-```
-int f0/3
-switchport trunk encapsulation dot1q
-switchport mode trunk
-```
-
-Next I assigned IP addresses to the interfaces of the routers connected to the main campus router.
-I entered the following commands in configuration mode:
-```
-int s0/1/1
-ip address 10.10.10.1 255.255.255.252
-```
-
-I assigned the Email server a static IP address.
-![image](https://github.com/user-attachments/assets/63560256-ccb6-4ae8-bb21-6652bc137843)
-
-
-Next I configred sub interfaces to match the Vlans 
-I entered the following commands in configuration mode:
-```
-int g0/0.100
-encapsulation dot1q 100
-ip add 192.168.10.1 255.255.255.0
-
-ex
-do wr
-```
-
-I enabled dhcp with the command `service dhcp`
-I created dhcp pools for each department with the command:
-```
-ip dhcp pool staff-pool
-network 192.168.9.0 255.255.255.0
-```
-
-I used the address that I used to create the sub interfaces as the default router and dns server.
-```
-default-router 192.168.9.1
-dns-server 192.168.9.1
-```
-
-I clicked on one of the PCs in the Vlan to see if it got an automatic ip address to see if the dhcp configuration worked:
-![image](https://github.com/user-attachments/assets/7984d65f-3461-4612-8cc5-a2134d894335)
-
-
-
-
-
-Configuring subinterfaces on the router for each vlan
-```
-int g0/0.10
-encapsulation dot1Q 10
-ip address 192.168.1.1 255.255.255.0
-ex
-```
-
-Configuring the dhcp server
-```
-service dhcp
-ip dhcp pool admin-pool
-network 192.168.1.0 255.255.255.0
-default-router 192.168.1.1
-dns-server 192.168.1.1
-exit 
-```
-
-When I was done the dhcp configuration worked since each device was receiving a dhcp address but the intervan routing was having problems since I wasnt able to ping devices form different vlans.
-So I started troubleshooting and checking my configurations, the vlans and sub interfaces were properly configured.
-I configured the port that connects the L3 switch to the Main campus router as a Trunk port but I was still having trouble 
-
-
-On a PC on the main campus,I tried to ping devices in the smaller campus network but I got an error saying destination host unreachable.
+### Step 8: Routing Configuration
+While troubleshooting connectivity from a PC on the main campus to devices in the smaller campus network, I encountered an error message stating, "Destination Host Unreachable."
 ![image](https://github.com/user-attachments/assets/261c86ae-a3ed-4318-8ea4-c28acdf998b2)
 
 
-To fix this I implemented a routing protocol: RIPv2.
+To resolve this issue, I implemented the Routing Information Protocol version 2 (RIPv2) to enable inter-VLAN and campus-to-campus communication.
 
-To configure it I used the commands: 
-On the smaller campus router:
+**Configuration on the smaller campus router:**
 ```
-en
-conf t
-router rip 
+router rip
 version 2
 network 192.168.9.0
 network 192.168.10.0
@@ -188,14 +132,19 @@ network 10.10.10.0
 do wr
 ```
 
-
-I used the same commands on the main campus router but just used the 10 networks connected to the router for that command an dnow I was able to ping PCs in the samller campus network from any PCs in the main campu network.
-
-I also tested connectivity to see if the email server in the cloud was able to ping devices from the all the campuses and it was successful.
+**Configuration on the main campus router:**
+```
+router rip
+version 2
+network 192.168.1.0
+network 192.168.2.0
+network 192.168.3.0
+network 10.10.10.0
+do wr
+```
+After applying the routing configuration, I tested the connectivity to verify that the email server in the cloud could successfully ping devices across all campuses. The test was successful. 
 ![Physical](https://github.com/user-attachments/assets/e3544800-5581-4131-abc3-e438c70123f3)
 
-
-
-
-
+## Conclusion
+This project effectively demonstrates how to design and implement a multi-campus university network using VLANs, routing protocols, and DHCP for dynamic IP addressing. The setup ensures secure, segmented communication between departments and reliable connectivity across campuses.
 
