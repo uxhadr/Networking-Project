@@ -155,5 +155,5 @@ This project successfully demonstrates the design and implementation of a scalab
 ## How to View the Network Design
 
 1. **Download the Project File:**  
-   Click [**here**](./university_network_project.pkt) to download the Cisco Packet Tracer file.
+   Click [**here**](./University_Network_Project.pkt) to download the Cisco Packet Tracer file.
 
