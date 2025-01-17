@@ -149,3 +149,11 @@ After applying the routing configuration, I tested the connectivity to verify th
 ## Conclusion
 This project successfully demonstrates the design and implementation of a scalable, secure, and efficient university network. Utilizing VLAN segmentation, dynamic routing with RIPv2, and DHCP for address management ensures secure departmental communication and reliable inter-campus connectivity.
 
+
+----
+
+## How to View the Network Design
+
+1. **Download the Project File:**  
+   Click [**here**](./university_network_project.pkt) to download the Cisco Packet Tracer file.
+
